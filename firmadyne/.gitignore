@@ -1,0 +1,10 @@
+firmadyne.config
+
+*.o
+# *.armel
+# *.mipseb
+# *.mipsel
+# binaries/
+images/
+scratch/
+.DS_Store

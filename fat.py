@@ -89,10 +89,12 @@ def identify_arch(image_id):
     return arch
 
 
-def make_image(arch, image_id):
+def make_image(arch, image_id, hook):
     print ("[+] Building QEMU disk image...")
     makeimage_cmd = os.path.join(firmadyne_path, "scripts/makeImage.sh")
     makeimage_args = ["--", makeimage_cmd, image_id, arch]
+    if hook:
+        makeimage_args.append(hook)
     child = pexpect.spawn("sudo", makeimage_args, cwd=firmadyne_path)
     child.sendline(sudo_pass)
     child.expect_exact(pexpect.EOF)
@@ -146,6 +148,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("firm_path", help="The path to the firmware image", type=str)
     parser.add_argument("-q", "--qemu", metavar="qemu_path", help="The qemu version to use (must exist within qemu-builds directory). If not specified, the qemu version installed system-wide will be used", type=str)
+    parser.add_argument("--fix-image-hook", type=str)
+
     args = parser.parse_args()
 
     qemu_ver = args.qemu
@@ -163,7 +167,7 @@ def main():
         print ("[!] Image extraction failed")
     else:
         arch = identify_arch(image_id)
-        make_image(arch, image_id)
+        make_image(arch, image_id, args.fix_image_hook)
         infer_network(arch, image_id, qemu_dir)
         final_run(image_id, arch, qemu_dir)
 
