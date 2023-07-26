@@ -97,6 +97,7 @@ def make_image(arch, image_id, hook):
         makeimage_args.append(hook)
     child = pexpect.spawn("sudo", makeimage_args, cwd=firmadyne_path)
     child.sendline(sudo_pass)
+    print("".join([s.decode() for s in child.readlines()]))
     child.expect_exact(pexpect.EOF)
 
 

@@ -106,11 +106,12 @@ echo "----Patching Filesystem (chroot)----"
 cp $(which busybox) "${IMAGE_DIR}"
 cp "${SCRIPT_DIR}/fixImage.sh" "${IMAGE_DIR}"
 chroot "${IMAGE_DIR}" /busybox ash /fixImage.sh
+rm "${IMAGE_DIR}/fixImage.sh"
 if [[ $# -eq 3 ]]; then
+    echo "----Running Custom Patching Script $3----"
     cp "$3" "${IMAGE_DIR}" && chroot "${IMAGE_DIR}" /busybox ash /$(basename "$3")
     rm ${IMAGE_DIR}/$(basename "$3")
 fi
-rm "${IMAGE_DIR}/fixImage.sh"
 rm "${IMAGE_DIR}/busybox"
 
 echo "----Setting up FIRMADYNE----"

@@ -5,7 +5,9 @@ ENV TZ Etc/UTC
 
 RUN echo 'root:root' | chpasswd
 
-RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list && apt-get clean && \
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list && \
+    grep -v '^deb http://security' /etc/apt/sources.list > /tmp/list && cat /tmp/list > /etc/apt/sources.list && rm /tmp/list && \
+    apt-get clean && \
     apt-get update && \
     apt-get install -y python3-pip python3-pexpect unzip busybox-static fakeroot kpartx snmp uml-utilities util-linux vlan qemu-system-arm qemu-system-mips qemu-system-x86 qemu-utils wget tar lsb-core libjpeg-dev zlib1g-dev sudo && \
     apt-get autoremove --yes && rm -rf /var/lib/apt/lists/*
